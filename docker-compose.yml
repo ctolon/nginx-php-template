@@ -1,0 +1,42 @@
+version: '2'
+
+networks:
+  nginx_net:
+    name: nginx_net
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.25.0.0/16
+          gateway: 172.25.0.1
+
+
+# service reload: nginx -s reload
+# configuration test: nginx -t
+services:
+  nginx:
+    #build:
+    #  context: ./nginx
+    #  dockerfile: Dockerfile
+    container_name: nginx
+    image: nginx:1.25.3
+    restart: unless-stopped
+    hostname: nginx
+    stdin_open: true
+    tty: true
+    network_mode: host
+    #networks:
+    #  nginx_net:
+    #    ipv4_address: 172.25.0.2
+    #ports:
+    #  - "443:443"
+    #  - "80:80"
+    volumes:
+      - ./etc/nginx:/etc/nginx
+       # - ./nginx/etc/hosts:/etc/hosts
+
+      - ./logs:/var/log/nginx
+      
+    # Don't need to use most of time
+    # command: /bin/bash
+    # for debugging
+    #command: [nginx-debug, '-g', 'daemon off;']
